@@ -1,0 +1,425 @@
+directive @goField(forceResolver: Boolean, name: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @goModel(model: String, models: [String!]) on ENUM | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
+
+directive @goTag(key: String!, value: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+type ActiveEventAlert {
+  trigger: EventTriggerType!
+  value: String!
+}
+
+type ActiveEventAlerts {
+  alerts: [ActiveEventAlert!]!
+  eventId: ID!
+  meeting: EventAlertMeeting
+  userId: ID!
+}
+
+input AddPriceAlertInput {
+  alertType: PriceAlertType!
+  bookmakers: [String!]!
+  eventId: ID!
+  persistent: Boolean
+  priceIds: [ID!]!
+  priceType: PriceAlertPriceType!
+  runnerId: ID!
+  userId: ID!
+  value: Float!
+  variance: Float
+}
+
+type AlertConfig {
+  telegramId: String!
+}
+
+input AlertConfigInput {
+  telegramId: String!
+}
+
+type ApiKey {
+  createdAt: Time!
+  key: String!
+  lastUsed: Time
+  name: String!
+  type: String!
+}
+
+type BetfairMapping {
+  place: String
+  win: String
+}
+
+type BetfairMarket {
+  back: [BetfairTick]
+  id: ID!
+  lastPriceTraded: Float
+  lay: [BetfairTick]
+  marketId: ID!
+  marketName: String
+  marketTotalMatched: Float
+  sp: Float
+  totalMatched: Float
+}
+
+type BetfairTick {
+  lastUpdated: Time!
+  price: Float!
+  size: Float!
+}
+
+type BillingInformation {
+  stripeId: String
+  subscriptions: [BillingSubscription!]!
+}
+
+type BillingSubscription {
+  stripePriceId: String!
+  subscriptionEnd: Time
+  trialEnd: Time
+}
+
+type BookmakerMarket {
+  bookmaker: String
+  fixedPlace: Price
+  fixedWin: Price
+  id: ID!
+}
+
+type CustomColumnData {
+  columnName: String!
+  selectionData: [SelectionData]
+}
+
+input CustomColumnDataInput {
+  columnName: String!
+  selectionData: [SelectionDataInput]
+}
+
+type EventAlert {
+  eventId: ID
+  id: ID!
+  trigger: EventTriggerType!
+  value: String!
+}
+
+input EventAlertInput {
+  trigger: EventTriggerType!
+  value: String!
+}
+
+type EventAlertMeeting {
+  track: String!
+  type: String!
+}
+
+enum EventTriggerType {
+  EVENT_ADDED
+  PRICES_ADDED
+  PRICE_ALERT
+  TIME_TO_JUMP
+}
+
+type Fluc {
+  lastUpdated: Time!
+  price: Float!
+}
+
+type Form {
+  last5: String
+}
+
+type LastTriggeredPrice {
+  price: Float!
+  priceId: ID!
+}
+
+type LayoutConfig {
+  boldTopPrice: Boolean
+  layoutPreferences: [LayoutPreference!]!
+  name: String!
+  remainingBookmakerSort: RemainingBookmakerSort
+  scratchedRunnerVisibility: ScratchedRunnerVisibility
+  showRemainingBookmakers: LayoutPreferenceType
+}
+
+input LayoutConfigInput {
+  boldTopPrice: Boolean
+  layoutPreferences: [LayoutPreferenceInput!]!
+  name: String!
+  remainingBookmakerSort: RemainingBookmakerSort
+  scratchedRunnerVisibility: ScratchedRunnerVisibility
+  showRemainingBookmakers: LayoutPreferenceType
+}
+
+type LayoutPreference {
+  bookmaker: String
+  level: LayoutPreferenceBetfairLevel
+  locked: Boolean
+  name: String
+  side: LayoutPreferenceBetfairSide
+  size: TextLayoutPreferenceSize
+  type: LayoutPreferenceType
+}
+
+enum LayoutPreferenceBetfairLevel {
+  ONE
+  TWO
+  WEIGHTED_AVERAGE
+  ZERO
+}
+
+enum LayoutPreferenceBetfairSide {
+  BACK
+  LAY
+}
+
+input LayoutPreferenceInput {
+  bookmaker: String
+  level: LayoutPreferenceBetfairLevel
+  locked: Boolean
+  name: String
+  side: LayoutPreferenceBetfairSide
+  size: TextLayoutPreferenceSize
+  type: LayoutPreferenceType
+}
+
+enum LayoutPreferenceType {
+  FIXED_PLACE
+  FIXED_PLACE_FLUCS
+  FIXED_WIN
+  FIXED_WIN_FLUCS
+  NONE
+  SPACER
+  TEXT
+}
+
+type Meeting {
+  date: String
+  id: ID!
+  location: String
+  railPosition: String
+  track: String
+  type: RaceType
+}
+
+type Mutation {
+  addPriceAlert(input: AddPriceAlertInput!): PriceAlert!
+  createUser(email: String!, id: ID!, name: String!): User!
+  removePriceAlert(input: RemovePriceAlertInput!): PriceAlert!
+  updateAlertConfig(config: AlertConfigInput!): AlertConfig!
+  updateAlerts(alerts: [EventAlertInput]!, id: ID!): ActiveEventAlerts
+  updateUserEventData(input: UpdateUserEventDataInput!): UserEventData!
+  updateUserLayouts(layouts: UserLayoutsInput!): [LayoutConfig!]!
+  updateUserSiteConfig(config: SiteConfigInput!): User!
+}
+
+type Price {
+  flucs: [Fluc]
+  lastUpdated: Time
+  openingPrice: Float
+  price: Float
+}
+
+type PriceAlert {
+  alertType: PriceAlertType!
+  bookmakers: [String!]!
+  createdAt: Time
+  eventId: ID!
+  id: ID!
+  lastTriggeredPrice: [LastTriggeredPrice!]!
+  persistent: Boolean
+  priceIds: [ID!]!
+  priceType: PriceAlertPriceType!
+  runnerId: ID!
+  updatedAt: Time
+  userId: ID!
+  value: Float!
+  variance: Float
+}
+
+input PriceAlertInput {
+  alertType: PriceAlertType!
+  bookmakers: [String!]!
+  createdAt: Time!
+  eventId: ID!
+  persistent: Boolean
+  priceIds: [ID!]!
+  priceType: PriceAlertPriceType!
+  runnerId: ID!
+  userId: ID!
+  value: Float!
+  variance: Float
+}
+
+enum PriceAlertPriceType {
+  FIXED_PLACE
+  FIXED_WIN
+}
+
+enum PriceAlertType {
+  GREATER_THAN
+  GREATER_THAN_OR_LESS_THAN
+  LESS_THAN
+}
+
+input PriceAlertsInput {
+  created: [PriceAlertInput]
+  deleted: [ID]
+  updated: [PriceAlertInput]
+}
+
+type Query {
+  eventAlerts(id: ID!): ActiveEventAlerts!
+  priceAlerts(id: ID): [PriceAlert!]!
+  race(id: ID!): Race!
+  races(dateFrom: String, dateTo: String, hasBookmakers: [String!], hasRiders: [String!], hasRunners: [String!], hasTrainers: [String!], limit: Int, locations: [String!], offset: Int, tracks: [String!], types: [RaceType!]): [Race!]!
+  user(id: ID!): User!
+  userEventData(input: UserEventDataInput!): UserEventData!
+}
+
+type Race {
+  betfairMapping: BetfairMapping
+  classConditions: String
+  createdAt: Time
+  distance: Int
+  id: ID!
+  links: [RaceLink]
+  meeting: Meeting
+  name: String
+  number: Int
+  prizeMoney: String
+  results: [[Int]]
+  runners(name: String, riderName: String, trainerName: String): [Runner!]!
+  startTime: Time
+  status: RaceStatus
+  trackCondition: String
+  updatedAt: Time
+}
+
+type RaceLink {
+  bookmaker: String!
+  lastSuccessfulPriceUpdate: Time
+  navLink: String
+}
+
+enum RaceStatus {
+  Abandoned
+  Closed
+  Interim
+  Open
+  Resulted
+  Unknown
+}
+
+enum RaceType {
+  Greyhound
+  Harness
+  Thoroughbred
+}
+
+enum RemainingBookmakerSort {
+  ALPHABETICAL
+  MARKET_FRAME
+}
+
+input RemovePriceAlertInput {
+  id: ID!
+}
+
+type Runner {
+  age: Int
+  barrier: Int
+  betfairId: String
+  betfairMarkets: [BetfairMarket]
+  bookmakerMarkets(bookmakers: [String!]): [BookmakerMarket]
+  dam: String
+  daysSinceLastRun: Int
+  form: Form
+  id: ID!
+  name: String
+  number: Int!
+  prizeMoney: Float
+  riderName: String
+  scratchedTime: Time
+  sex: String
+  sire: String
+  trainerName: String
+}
+
+enum ScratchedRunnerVisibility {
+  BOTTOM
+  HIDE
+  SHOW
+}
+
+type SelectionData {
+  selectionId: ID!
+  value: String
+}
+
+input SelectionDataInput {
+  selectionId: ID!
+  value: String
+}
+
+type SiteConfig {
+  alternateColourMode: Boolean
+  autoEventNav: Boolean
+  hideAbandonedRaces: Boolean
+}
+
+input SiteConfigInput {
+  alternateColourMode: Boolean
+  autoEventNav: Boolean
+  hideAbandonedRaces: Boolean
+}
+
+type Subscription {
+  betfairUpdates(id: ID): [BetfairMarket!]!
+  eventAlerts: EventAlert!
+  priceAlerts(id: ID): PriceAlert!
+  priceUpdates(id: ID): [BookmakerMarket!]!
+  raceUpdates(id: ID!): Race!
+  racesUpdates(dateFrom: String, dateTo: String): Race!
+  runnerUpdates(id: ID!): Runner!
+}
+
+enum TextLayoutPreferenceSize {
+  LARGE
+  MEDIUM
+  SMALL
+}
+
+scalar Time
+
+input UpdateUserEventDataInput {
+  customData: [CustomColumnDataInput]
+  eventId: ID!
+}
+
+type User {
+  alertConfig: AlertConfig!
+  apiKeys: [ApiKey!]!
+  billingInformation: BillingInformation
+  email: String!
+  id: ID!
+  layoutConfigs: [LayoutConfig!]!
+  name: String!
+  siteConfig: SiteConfig!
+}
+
+type UserEventData {
+  data: [CustomColumnData]
+  eventId: ID!
+  id: ID!
+  userId: ID!
+}
+
+input UserEventDataInput {
+  eventId: ID!
+}
+
+input UserLayoutsInput {
+  layouts: [LayoutConfigInput!]!
+}
